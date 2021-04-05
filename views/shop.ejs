@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!--4000002500003155-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Darker+Grotesque&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a41e9403cf.js" crossorigin="anonymous"></script>
+    <title>BikeShop - Shop</title>
+</head>
+
+<body>
+
+  <!-- NAV & BREADCRUMB SECTION -->
+  <div class="container-fluid">
+
+    <nav class="navbar navbar-light bg-dark">
+      <a class="navbar" href="/">
+          <img src="images/bike-logo.svg" width="50" height="50" class="logo" alt="">
+            The Bike Shop Experience
+      </a>
+    </nav>
+    
+    <div class="row ariane">
+      <nav aria-label="breadcrumb" class="col-12">
+          <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="/">Shop</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Cart</li>
+          </ol>
+      </nav>
+    </div>
+
+    <!-- CART section -->
+    <h1>Cart</h1>
+
+    <% if(dataBikeShop.length < 1){ %>
+      <h5 class="no-article">Your cart is empty</h5>
+  
+    <%} else {%>
+
+    <div class="row">
+      <table class="table">
+
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Picture</th>
+              <th scope="col">Model</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Price</th>
+              <th scope="col">Total</th>
+              <th scope="col">Suppr</th>
+            </tr>
+          </thead>
+          
+          <tbody>
+
+            <% var totalCmd = 0; 
+              for(var i = 0; i < dataBikeShop.length; i++) { %>
+
+            <tr class="basket-item">
+              <th scope="row"><%=i+1%></th>
+              <td><img src=<%= dataBikeShop[i].url %> class="basket-img"></td>
+              <td>
+                <%= dataBikeShop[i].name %>
+              </td>
+              <td>
+                  <form action="/update-quantity" method="POST">
+                      <input type="hidden" name="position" value='<%=i%>' >
+                      <input type="text" name="quantity" value='<%= dataBikeShop[i].quantity%>' >
+                      <button type="submit" class="btn btn-outline-info btn-sm" name="button"><i class="fas fa-sync-alt"></i></button>
+                  </form>
+              </td>
+              <td><%= dataBikeShop[i].price %>€</td>
+              <td><%= dataBikeShop[i].price * dataBikeShop[i].quantity %>€</td>
+              <td><a href="/delete-item?position=<%=i%>"><button class="btn btn-outline-info btn-sm" name="button"><i class="far fa-trash-alt"></i></button></a></td>
+            </tr>
+
+            <% totalCmd += dataBikeShop[i].price * dataBikeShop[i].quantity }%>
+
+            <tr>
+              <th scope="row"></th>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td class="total-box">Total Basket : </td>
+              <td><%= totalCmd %>€</td>
+              <td></td>
+            </tr>
+          </tbody>
+      </table>
+    </div> 
+
+    <div class="row">
+      <div class="col-12 text-right">
+          <button class="btn btn-outline-info btn-sm btn-checkout" name="button-checkout" id="checkout-button">Checkout</button>
+
+      </div>
+    </div>
+    <% } %>
+
+  </div>
+
+    <!-- scripts -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.jintegrity="sha384-q8+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizcrossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="/javascripts/script.js"></script>
+</body>
+</html>
