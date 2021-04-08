@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!--4000002500003155-->
+  <!--Test credit card number :4000002500003155-->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -59,8 +59,7 @@
           
           <tbody>
 
-            <% var totalCmd = 0; 
-              for(var i = 0; i < dataBikeShop.length; i++) { %>
+            <% for(var i = 0; i < dataBikeShop.length; i++) { %>
 
             <tr class="basket-item">
               <th scope="row"><%=i+1%></th>
@@ -80,7 +79,22 @@
               <td><a href="/delete-item?position=<%=i%>"><button class="btn btn-outline-info btn-sm" name="button"><i class="far fa-trash-alt"></i></button></a></td>
             </tr>
 
-            <% totalCmd += dataBikeShop[i].price * dataBikeShop[i].quantity }%>
+            <% } %>
+
+            <% 
+            var libelle = montantFraisPort + "€"
+            if(montantFraisPort === 0){libelle = "Frais de port offerts"}
+            %>
+
+            <tr>
+              <th scope="row"></th>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td class="total-box">Frais de port </td>
+              <td><%= libelle %></td>
+              <td></td>
+            </tr>
 
             <tr>
               <th scope="row"></th>
@@ -88,7 +102,7 @@
               <td></td>
               <td></td>
               <td class="total-box">Total Basket : </td>
-              <td><%= totalCmd %>€</td>
+              <td><%= montantCommande %>€</td>
               <td></td>
             </tr>
           </tbody>
@@ -97,7 +111,7 @@
 
     <div class="row">
       <div class="col-12 text-right">
-          <button class="btn btn-outline-info btn-sm btn-checkout" name="button-checkout" id="checkout-button">Checkout</button>
+          <button class="btn btn-outline-info btn-sm btn-checkout" name="button-checkout" id="checkout">Checkout</button>
 
       </div>
     </div>
@@ -110,6 +124,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="https://js.stripe.com/v3/"></script>
+    <script> const sessionStripeID = "<%=sessionStripeID%>"</script>
     <script src="/javascripts/script.js"></script>
 </body>
 </html>
