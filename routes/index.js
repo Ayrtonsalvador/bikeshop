@@ -3,54 +3,39 @@ var router = express.Router();
 const stripe = require('stripe')('sk_test_51HQ944IJXMBHCVEyjJU7JTQIvqbBgc5ccwipcRKDFryIaA0tiKzdSnd3IIszFuptC63kZZmYbNrfqt483j557JKr00Qrwk151q');
 
 var dataBike = [
-{name:"RockRider 340", url:"/images/bike-1.jpg", price:339},
-{name:"RockRider 440", url:"/images/bike-2.jpg", price:439},
-{name:"RockRider 540", url:"/images/bike-3.jpg", price:539},
-{name:"RockRider 590", url:"/images/bike-4.jpg", price:589},
-{name:"RockRider 690", url:"/images/bike-5.jpg", price:689},
-{name:"RockRider 790", url:"/images/bike-6.jpg", price:789},
-{name:"RockRider R1", url:"/images/R1.jpg", price:999},
-{name:"RockRider R2", url:"/images/R2.jpg", price:1299},
-{name:"RockRider R3", url:"/images/R3.jpg", price:1499}];
+{name:"RockRider 340", url:"/images/bike-1.jpg", price:339, mea:false},
+{name:"RockRider 440", url:"/images/bike-2.jpg", price:439, mea:false},
+{name:"RockRider 540", url:"/images/bike-3.jpg", price:539, mea:false},
+{name:"RockRider 590", url:"/images/bike-4.jpg", price:589, mea:false},
+{name:"RockRider 690", url:"/images/bike-5.jpg", price:689, mea:false},
+{name:"RockRider 790", url:"/images/bike-6.jpg", price:789, mea:false},
+{name:"RockRider R1", url:"/images/R1.jpg", price:999, mea:true},
+{name:"RockRider R2", url:"/images/R2.jpg", price:1299, mea:true},
+{name:"RockRider R3", url:"/images/R3.jpg", price:1499, mea:true} ];
 
 
-/* BACK-END Stripe API config */
+/* Function that creates a session on Stripe */
 var sendToStripe = async (dataBikeShop,montantFraisPort) => {
 
   var panier = [];
 
   for(var i = 0; i < dataBikeShop.length; i++) {
     panier.push(
-      // {name: dataBikeShop[i].name,
-      //     amount: Number(dataBikeShop[i].price * 100),
-      //     currency: 'eur',
-      //     quantity: dataBikeShop[i].quantity}
-
           {price_data: {
              currency: 'eur',
              product_data: {name: dataBikeShop[i].name},
              unit_amount: Number(dataBikeShop[i].price * 100)},
            quantity: dataBikeShop[i].quantity}
-
     );};
 
   if(montantFraisPort>0){
     panier.push(
-      
-      // {name: 'Frais de port',
-      //     amount: Number(montantFraisPort * 100),
-      //     currency: 'eur',
-      //     quantity: 1}
-
           {price_data: {
              currency: 'eur',
              product_data: {name: 'Frais de port'},
              unit_amount: Number(montantFraisPort * 100)},
            quantity: 1}
-
     );};
-
-  console.log(panier)
 
   var sessionStripeID;
 
@@ -67,7 +52,7 @@ var sendToStripe = async (dataBikeShop,montantFraisPort) => {
   return sessionStripeID
 }
 
-
+/* Function that calculates the order amount + shipping costs */
 var calculTotalCommande = (dataBikeShop) => {
   var nbProduits = 0
   var totalCmd = 0
@@ -86,13 +71,24 @@ totalCmd += montantFraisPort
 return {montantFraisPort,totalCmd}
 }
 
+/* Function that selects the 3 items to focus on */
+
+var getMeaList = (dataBike) => {
+  dataBike.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+  dataBike = dataBike.filter(a => a.mea === true);
+  dataBike = dataBike.slice(0,3)
+  console.log(dataBike)
+  return dataBike
+}
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
   if(req.session.dataBikeShop == undefined) {
     req.session.dataBikeShop = [] }
 
-  res.render('index', { dataBike });
+    var mea = getMeaList(dataBike)
+
+  res.render('index', { dataBike, mea });
 });
 
 
@@ -142,7 +138,7 @@ req.session.dataBikeShop[position].quantity = newQuantity;
   });
 
 
-/* GET Successful Payment page. */
+/* GET successful Payment page. */
 router.get('/success', function(req, res, next) {
   res.render('success');
 });
